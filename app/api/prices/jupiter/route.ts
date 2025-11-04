@@ -28,8 +28,13 @@ export async function GET(request: Request) {
 
     const cgData = await response.json();
     
-    // Transform to our format - map each token
-    const data: Record<string, any> = {};
+    interface TokenData {
+      id: string;
+      symbol: string;
+      price: number;
+    }
+    
+    const data: Record<string, TokenData> = {};
     
     TOKENS.forEach(token => {
       const tokenData = cgData[token.coingeckoId];

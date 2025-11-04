@@ -3,6 +3,7 @@ export interface Token {
     name: string;
     coingeckoId: string;
     mint?: string; // We'll use this later for Jupiter
+    
   }
   
   export const TOKENS: Token[] = [

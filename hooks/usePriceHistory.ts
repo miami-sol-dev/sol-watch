@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 interface PricePoint {
   timestamp: number;
@@ -6,22 +6,22 @@ interface PricePoint {
 }
 
 export function usePriceHistory(currentPrice: number | undefined, maxPoints: number = 20) {
-  const historyRef = useRef<PricePoint[]>([]);
+  const [history, setHistory] = useState<PricePoint[]>([]);
 
   useEffect(() => {
     if (currentPrice === undefined) return;
 
-    const now = Date.now();
-    const newPoint = { timestamp: now, price: currentPrice };
+    const newPoint = { timestamp: Date.now(), price: currentPrice };
 
-    // Add new point
-    historyRef.current = [...historyRef.current, newPoint];
-
-    // Keep only last N points
-    if (historyRef.current.length > maxPoints) {
-      historyRef.current = historyRef.current.slice(-maxPoints);
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // Valid use case: We're intentionally tracking price changes over time
+    // This is external data synchronization, not cascading renders
+    setHistory((prev) => {
+      const updated = [...prev, newPoint];
+      // Keep only last N points
+      return updated.length > maxPoints ? updated.slice(-maxPoints) : updated;
+    });
   }, [currentPrice, maxPoints]);
 
-  return historyRef.current;
+  return history;
 }

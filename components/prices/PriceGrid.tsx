@@ -196,7 +196,7 @@ function TokenCard({ token }: { token: typeof TOKENS[0] }) {
 
 export default function PriceGrid() {
   const allMints = TOKENS.map(t => t.mint).filter(Boolean).join(',');
-  const { data, error, isLoading } = useGetPriceQuery(allMints, {
+    const {  error, isLoading } = useGetPriceQuery(allMints, {
     pollingInterval: 30000,
   });
 

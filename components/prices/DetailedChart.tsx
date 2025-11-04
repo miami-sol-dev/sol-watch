@@ -7,20 +7,28 @@ interface DetailedChartProps {
   coingeckoId: string;
   symbol: string;
   isPositive: boolean;
-  isOpen: boolean; // Only fetch when modal is open
+  isOpen: boolean;
 }
 
-// Cache historical data to avoid repeated API calls
-const chartCache = new Map<string, { data: any[]; timestamp: number }>();
+interface PricePoint {
+  timestamp: number;
+  price: number;
+}
+
+interface CachedData {
+  data: PricePoint[];
+  timestamp: number;
+}
+
+const chartCache = new Map<string, CachedData>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export default function DetailedChart({ coingeckoId, symbol, isPositive, isOpen }: DetailedChartProps) {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<PricePoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Don't fetch if modal isn't open
     if (!isOpen) return;
 
     async function fetchHistory() {
@@ -28,7 +36,6 @@ export default function DetailedChart({ coingeckoId, symbol, isPositive, isOpen 
         setLoading(true);
         setError(null);
 
-        // Check cache first
         const cached = chartCache.get(coingeckoId);
         const now = Date.now();
         
@@ -39,7 +46,6 @@ export default function DetailedChart({ coingeckoId, symbol, isPositive, isOpen 
           return;
         }
 
-        // Fetch fresh data
         console.log('Fetching fresh data for', coingeckoId);
         const response = await fetch(`/api/prices/history?id=${coingeckoId}&days=1`);
         
@@ -53,7 +59,6 @@ export default function DetailedChart({ coingeckoId, symbol, isPositive, isOpen 
         const result = await response.json();
         const prices = result.prices || [];
         
-        // Cache the result
         chartCache.set(coingeckoId, {
           data: prices,
           timestamp: now,
@@ -115,7 +120,7 @@ export default function DetailedChart({ coingeckoId, symbol, isPositive, isOpen 
         <LineChart data={data}>
           <XAxis 
             dataKey="timestamp" 
-            tickFormatter={(timestamp) => {
+            tickFormatter={(timestamp: number) => {
               const date = new Date(timestamp);
               return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
             }}
@@ -124,7 +129,7 @@ export default function DetailedChart({ coingeckoId, symbol, isPositive, isOpen 
           />
           <YAxis 
             domain={['auto', 'auto']}
-            tickFormatter={(value) => `$${value.toFixed(2)}`}
+            tickFormatter={(value: number) => `$${value.toFixed(2)}`}
             stroke="var(--text-secondary)"
             style={{ fontSize: '12px' }}
           />
@@ -135,11 +140,11 @@ export default function DetailedChart({ coingeckoId, symbol, isPositive, isOpen 
               borderRadius: '8px',
               padding: '8px 12px',
             }}
-            labelFormatter={(timestamp) => {
+            labelFormatter={(timestamp: number) => {
               const date = new Date(timestamp);
               return date.toLocaleString();
             }}
-            formatter={(value: any) => [`$${value.toFixed(4)}`, symbol]}
+            formatter={(value: number) => [`$${value.toFixed(4)}`, symbol]}
           />
           <Line
             type="monotone"
