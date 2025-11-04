@@ -1,15 +1,37 @@
+import PriceGrid from '@/components/prices/PriceGrid';
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+
 const Home = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gradient-to-b from-zinc-900 to-black">
-      <div className="text-center space-y-6">
-        <h1 className="text-6xl font-bold text-white">
-          Sol<span className="text-purple-500">Watch</span>
-        </h1>
-        <p className="text-xl text-gray-400">
-          Real-time Solana arbitrage scanner
-        </p>
-        <div className="text-sm text-gray-500">
-          Week 1: Building in public 🚀
+    <main className="min-h-screen p-8" style={{ background: 'var(--bg-primary)' }}>
+      <div className="max-w-7xl mx-auto space-y-12">
+        {/* Header with Miami Vice gradient */}
+        <div className="text-center space-y-4 pt-8">
+          <h1 className="text-7xl font-bold">
+            <span style={{ color: 'var(--text-primary)' }}>Sol</span>
+            <span className="gradient-miami-text">Watch</span>
+          </h1>
+          <p className="text-xl" style={{ color: 'var(--text-secondary)' }}>
+            Real-time Solana arbitrage scanner
+          </p>
+          <div className="flex items-center justify-center gap-2 text-sm">
+            <span className="px-3 py-1 rounded-full gradient-miami text-white font-medium">
+              LIVE
+            </span>
+            <span style={{ color: 'var(--text-secondary)' }}>
+              Miami • {new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' })}
+            </span>
+          </div>
+        </div>
+
+        {/* Price Grid with Error Boundary */}
+        <ErrorBoundary>
+          <PriceGrid />
+        </ErrorBoundary>
+
+        {/* Footer */}
+        <div className="text-center text-sm pb-8" style={{ color: 'var(--text-secondary)' }}>
+          <p>Week 1: Miami Vice Edition 🌴</p>
         </div>
       </div>
     </main>
