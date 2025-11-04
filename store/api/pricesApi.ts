@@ -6,6 +6,8 @@ interface JupiterPrice {
   vsToken?: string;
   vsTokenSymbol?: string;
   price: number;
+  change24h: number;
+
 }
 
 interface JupiterResponse {
@@ -13,6 +15,7 @@ interface JupiterResponse {
     [key: string]: JupiterPrice;
   };
   timeTaken?: number;
+
 }
 
 export const pricesApi = createApi({
