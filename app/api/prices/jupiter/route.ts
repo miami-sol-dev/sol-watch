@@ -32,6 +32,7 @@ export async function GET(request: Request) {
       id: string;
       symbol: string;
       price: number;
+      change24h: number;
     }
     
     const data: Record<string, TokenData> = {};
