@@ -16,6 +16,7 @@ export function usePriceHistory(currentPrice: number | undefined, maxPoints: num
     // eslint-disable-next-line react-hooks/set-state-in-effect
     // Valid use case: We're intentionally tracking price changes over time
     // This is external data synchronization, not cascading renders
+    // eslint-disable-next-line
     setHistory((prev) => {
       const updated = [...prev, newPoint];
       // Keep only last N points
